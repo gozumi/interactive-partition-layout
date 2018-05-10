@@ -1,0 +1,22 @@
+{
+  "name": "interactive-partition-layout",
+  "version": "1.0.0",
+  "description": "An interactive partition layout based on D3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gozumi/interactive-partition-layout.git"
+  },
+  "keywords": [
+    "visualisation"
+  ],
+  "author": "Ian Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gozumi/interactive-partition-layout/issues"
+  },
+  "homepage": "https://github.com/gozumi/interactive-partition-layout#readme"
+}
