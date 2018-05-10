@@ -4,7 +4,8 @@
   "description": "An interactive partition layout based on D3",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint --project tsconfig.json -c tslint.json"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,16 @@
   "bugs": {
     "url": "https://github.com/gozumi/interactive-partition-layout/issues"
   },
-  "homepage": "https://github.com/gozumi/interactive-partition-layout#readme"
+  "homepage": "https://github.com/gozumi/interactive-partition-layout#readme",
+  "devDependencies": {
+    "@types/webpack": "^4.1.5",
+    "standardts": "^1.0.0",
+    "ts-loader": "^4.3.0",
+    "ts-node": "^6.0.3",
+    "tslint": "^5.10.0",
+    "tslint-config-standard": "^7.0.0",
+    "tslint-sonarts": "^1.6.0",
+    "typescript": "^2.8.3",
+    "webpack": "^4.8.1"
+  }
 }
