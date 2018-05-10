@@ -1,5 +1,6 @@
+/*tslint:disable:object-literal-sort-keys*/
+
 import * as webpack from 'webpack'
-// xxximport { InjectManifest } from 'workbox-webpack-plugin'
 
 const config: webpack.Configuration = {
   mode: 'development',
