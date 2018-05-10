@@ -8,7 +8,7 @@ const config: webpack.Configuration = {
   entry: './src/index.ts',
 
   output: {
-    filename: 'interactive-partition-layout.js',
+    filename: 'index.js',
     library: ['interactive-partition-layout'],
     libraryTarget: 'umd',
     path: `${__dirname}/lib`
