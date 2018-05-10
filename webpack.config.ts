@@ -11,7 +11,7 @@ const config: webpack.Configuration = {
     filename: 'interactive-partition-layout.js',
     library: ['interactive-partition-layout'],
     libraryTarget: 'umd',
-    path: `${__dirname}/dist`
+    path: `${__dirname}/lib`
   },
   module: {
     rules: [
