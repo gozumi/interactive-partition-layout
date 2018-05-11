@@ -1,6 +1,6 @@
 {
   "name": "interactive-partition-layout",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "An interactive partition layout based on D3",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
