@@ -24,7 +24,7 @@ const config: webpack.Configuration = {
   },
   plugins: [
     new CopyPlugin([
-      { from: './src/index.d.ts' }
+      { from: './src/_typings/index.d.ts' }
     ])
   ]
 }

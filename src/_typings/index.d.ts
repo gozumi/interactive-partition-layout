@@ -13,3 +13,9 @@ type Times100 = (n: number) => number
  * @param n The number to be multiplied by 100
  */
 export declare const times100: Times100
+
+export interface IAggregation {
+  aggregationType: string
+  name: string
+  children?: IAggregation[]
+}

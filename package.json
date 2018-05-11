@@ -28,6 +28,7 @@
   "homepage": "https://github.com/gozumi/interactive-partition-layout#readme",
   "devDependencies": {
     "@types/copy-webpack-plugin": "^4.4.1",
+    "@types/d3": "^5.0.0",
     "@types/webpack": "^4.1.5",
     "copy-webpack-plugin": "^4.5.1",
     "standardts": "^1.0.0",
@@ -39,5 +40,8 @@
     "typescript": "^2.8.3",
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3"
+  },
+  "dependencies": {
+    "d3": "^5.4.0"
   }
 }
