@@ -1,3 +1,5 @@
+import { renderD3PartitionLayout } from './d3/partition-layout'
+
 /**
  * Multiplies a given number by 10 and returns the result.
  * @param n The number to be multiplied by 10
@@ -13,3 +15,5 @@ export function times10 (n: number) {
 export function times100 (n: number) {
   return n * 100
 }
+
+export { renderD3PartitionLayout }

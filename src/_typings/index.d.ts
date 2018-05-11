@@ -1,3 +1,5 @@
+import { ID3PartitionProps } from "d3/partition-layout";
+
 type Times10 = (n: number) => number
 
 /**
@@ -19,3 +21,8 @@ export interface IAggregation {
   name: string
   children?: IAggregation[]
 }
+
+
+type RenderD3PartitionLayout = (props: ID3PartitionProps) => void
+
+export declare const renderD3PartitionLayout: RenderD3PartitionLayout

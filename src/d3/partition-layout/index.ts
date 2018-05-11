@@ -1,14 +1,20 @@
-import { hierarchy, partition as d3Partition, scaleLinear } from 'd3'
+import { hierarchy, HierarchyNode, partition as d3Partition, scaleLinear, select } from 'd3'
+import { Subject } from 'rxjs'
 
-import { IAggregation } from '_typings'
-
+import { debounceTime } from 'rxjs/operators'
+import { IDrawingSelections, IPartitionHierarchy, NodeHandler, PartitionHierarchyNode } from '../_interfaces'
 import { IScale } from '../_node_utils'
+import { CLICK, COLUMN_GROUP, DOUBLE_CLICK, GRAPH_CLASS } from './_constants'
+import { drawColumn } from './draw'
+import { updateScaleToZoom, zoomInOnMousePointer, zoomInOnNode } from './event-handlers/zoom'
 
 export interface ID3PartitionProps {
-  domNode: HTMLCanvasElement
-  aggregations: IAggregation
-  handleAggregationChange: (order: string[]) => void
-  nodeHtmlHandler: (d: any) => string
+  domNode: SVGSVGElement
+  aggregations: IPartitionHierarchy
+  aggregationChangeHandler: (order: string[]) => void
+  customNodeHtmlHandler?: NodeHandler
+  customNodeClassHandler?: NodeHandler
+  customNodeColourHandler?: NodeHandler
 }
 
 /**
@@ -18,7 +24,11 @@ export interface ID3PartitionProps {
 export function renderD3PartitionLayout (props: ID3PartitionProps) {
   const {
     aggregations,
-    domNode
+    domNode,
+    aggregationChangeHandler,
+    customNodeHtmlHandler,
+    customNodeClassHandler,
+    customNodeColourHandler
   } = props
 
   // terminate the function if there are no aggregations.
@@ -29,47 +39,110 @@ export function renderD3PartitionLayout (props: ID3PartitionProps) {
   const { width, height } = domNode ? domNode.getBoundingClientRect() : { width: 0, height: 0 }
   const resolution = { width: 10000000, height: 10000000 }
 
-  // set the dimensions of the layout
-  domNode.width = width
-  domNode.height = height
+  // remove old graph
+  const svg = select(domNode)
 
-  // create the drawing context
-  const context = domNode.getContext('2d')
-  // remove any old drawings
-  context.clearRect(0, 0, width, height)
+  svg
+    .selectAll(`.${GRAPH_CLASS}`)
+    .remove()
 
-  // create the partition calculations
+  const graph = select(domNode)
+    .append('g')
+    .attr('class', GRAPH_CLASS)
+
   const partition = d3Partition()
     .size([resolution.height, resolution.width])
     .round(true)
 
   const root = hierarchy(aggregations)
-  root.sum((d: any) => d.points)
+  root.sum((d: any) => d.value)
   partition(root)
-  const data: any[] = root.descendants()
+  const data: Array<HierarchyNode<IPartitionHierarchy>> = root.descendants()
 
   const scale: IScale = {
     height: resolution.height,
     width: resolution.width,
-    x: scaleLinear().domain([(data[0]).y1, resolution.width]).range([0, width]),
-    y: scaleLinear().domain([0, resolution.height]).range([0, height])
+    x: scaleLinear().domain([(data[0] as any).y1, resolution.width]).range([0, width]),
+    xOrigin: (data[0] as any).y1,
+    y: scaleLinear().domain([0, resolution.height]).range([0, height]),
+    yOrigin: 0
   }
 
-  for (const d of data) {
-    d.origin = { x: scale.x(d.y0), y: scale.y(d.x0) }
-    const x = d.origin.x
-    const y = d.origin.y
-    const cellWidth = scale.x(d.y1) - x - 2
-    const scaleHeight = scale.y(d.x1) - y
-    const cellHeight = scaleHeight > 2 ? scaleHeight - 1 : .13
-    context.fillStyle = 'firebrick'
-    context.fillRect(x, y, cellWidth, cellHeight)
+  const aggregationPointOrder: string[] = []
 
-    if (cellHeight > 12) {
-      context.font = '10px serif'
-      context.textBaseline = 'hanging'
-      context.fillStyle = 'white'
-      context.fillText(d.data.title, x + 3, y + 3)
-    }
+  // split column data
+  const columnData: Map<string, PartitionHierarchyNode[]> = new Map()
+
+  for (const datum of data) {
+    const { type } = datum.data
+    const columnArray = columnData.get(type) || []
+    columnData.set(type, columnArray)
+    columnArray.push(datum)
   }
+
+  const columnSelections: Map<string, IDrawingSelections> = new Map()
+  columnData.forEach((column, key) => {
+    const columnGroup = graph
+      .append('g')
+      .attr('class', `${COLUMN_GROUP} ${COLUMN_GROUP}-${key}`)
+    columnSelections.set(
+      key,
+      drawColumn({
+        aggregationChangeHandler,
+        aggregationPointOrder,
+        columnData: column,
+        columnGroup,
+        customNodeClassHandler,
+        customNodeColourHandler,
+        customNodeHtmlHandler,
+        scale
+      })
+    )
+  })
+
+  const clickText$: Subject<() => void> = new Subject()
+
+  clickText$.pipe(
+    debounceTime(200)
+  )
+  .subscribe((cb: () => void) => cb())
+
+  columnSelections.forEach((colSel) => {
+    const { arrows, html } = colSel
+
+    html
+      .on(DOUBLE_CLICK, (d: PartitionHierarchyNode) => {
+        clickText$.next(() => {
+          zoomInOnMousePointer(d, scale, columnSelections, aggregationPointOrder)
+        })
+      })
+      .on(CLICK, (d: PartitionHierarchyNode) => {
+
+        clickText$.next(() => {
+          if (scale.y(d.x0) === 0 && scale.y(d.x1) === height) {
+            return
+          }
+
+          updateScaleToZoom(scale, d)
+          columnSelections.forEach((colSelInner) => {
+            const nodesInner = colSelInner.nodes
+            const rectanglesInner = colSelInner.rectangles
+            const textInner = colSelInner.html
+            zoomInOnNode(d, nodesInner, rectanglesInner, textInner, scale, aggregationPointOrder)
+          })
+        })
+      })
+
+    arrows
+      .on(CLICK, (d: PartitionHierarchyNode) => {
+        const { parent } = d
+        updateScaleToZoom(scale, parent)
+        columnSelections.forEach((colSelInner) => {
+          const nodesInner = colSelInner.nodes
+          const rectanglesInner = colSelInner.rectangles
+          const htmlInner = colSelInner.html
+          zoomInOnNode(parent, nodesInner, rectanglesInner, htmlInner, scale, aggregationPointOrder)
+        })
+      })
+  })
 }
