@@ -1,5 +1,6 @@
 /*tslint:disable:object-literal-sort-keys*/
 
+import * as CopyPlugin from 'copy-webpack-plugin'
 import * as webpack from 'webpack'
 
 const config: webpack.Configuration = {
@@ -20,7 +21,12 @@ const config: webpack.Configuration = {
         test: /\.tsx?$/
       }
     ]
-  }
+  },
+  plugins: [
+    new CopyPlugin([
+      { from: './src/index.d.ts' }
+    ])
+  ]
 }
 
 export default config
