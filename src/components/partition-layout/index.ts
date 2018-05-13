@@ -1,21 +1,12 @@
+import { ID3PartitionProps, IDrawingSelections, IPartitionHierarchy, PartitionHierarchyNode } from '_typings'
 import { hierarchy, HierarchyNode, partition as d3Partition, scaleLinear, select } from 'd3'
 import { Subject } from 'rxjs'
-
 import { debounceTime } from 'rxjs/operators'
-import { IDrawingSelections, IPartitionHierarchy, NodeHandler, PartitionHierarchyNode } from '../_interfaces'
+
 import { IScale } from '../_node_utils'
 import { CLICK, COLUMN_GROUP, DOUBLE_CLICK, GRAPH_CLASS } from './_constants'
 import { drawColumn } from './draw'
 import { updateScaleToZoom, zoomInOnMousePointer, zoomInOnNode } from './event-handlers/zoom'
-
-export interface ID3PartitionProps {
-  domNode: SVGSVGElement
-  aggregations: IPartitionHierarchy
-  aggregationChangeHandler: (order: string[]) => void
-  customNodeHtmlHandler?: NodeHandler
-  customNodeClassHandler?: NodeHandler
-  customNodeColourHandler?: NodeHandler
-}
 
 /**
  * Draws a partition layout.

@@ -1,4 +1,4 @@
-import { renderD3PartitionLayout } from './d3/partition-layout'
+import { renderD3PartitionLayout } from 'components/partition-layout'
 
 /**
  * Multiplies a given number by 10 and returns the result.
