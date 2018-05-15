@@ -5,9 +5,11 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 
 const config: webpack.Configuration = {
-  mode: 'development',
+  mode: 'production',
 
   entry: './src/index.ts',
+
+  externals: { d3: 'd3' },
 
   resolve: {
     alias: {
