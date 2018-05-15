@@ -1,6 +1,6 @@
 import { ScaleLinear } from 'd3'
 
-import { NodeHandler, PartitionHierarchyNode } from '../_interfaces'
+import { NodeHandler, PartitionHierarchyNode } from '_typings'
 import { AGGREGATION_CLASS, NODE_CLASS } from '../partition-layout/_constants'
 
 export interface IScale {

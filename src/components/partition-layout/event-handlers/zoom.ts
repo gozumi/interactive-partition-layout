@@ -1,6 +1,6 @@
 import { Selection } from 'd3'
 
-import { IDrawingSelections, PartitionHierarchyNode } from '../../_interfaces'
+import { IDrawingSelections, PartitionHierarchyNode } from '_typings'
 import { IScale, setNodeHtmlBoxStyle, translateNodePosition } from '../../_node_utils'
 import { NODE_ARROW, NODE_CLASS } from '../_constants'
 import { calculateNodeHeight, calculateNodeWidth } from '../calculation-handlers'

@@ -1,6 +1,6 @@
 import { drag, Selection } from 'd3'
 
-import { IDrawingSelections, NodeHandler, PartitionHierarchyNode } from '../../_interfaces'
+import { IDrawingSelections, NodeHandler, PartitionHierarchyNode } from '_typings'
 import {
   IScale,
   setNodeClass,
